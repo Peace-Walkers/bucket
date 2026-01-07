@@ -12,8 +12,7 @@ fn main() -> anyhow::Result<()> {
 
     let config = config::load_config()?;
 
-    dbg!(config);
-
     dbg!(args);
+    dbg!(config);
     Ok(())
 }
