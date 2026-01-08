@@ -33,7 +33,7 @@ impl Note {
         &self.path
     }
 
-    pub fn assign_group(&mut self, group: String) {
-        self.group = Some(group)
+    pub fn assign_group(&mut self, group: &str) {
+        self.group = Some(group.to_string())
     }
 }
