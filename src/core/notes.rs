@@ -1,4 +1,8 @@
-use std::path::{Path, PathBuf};
+use std::{
+    ffi::OsStr,
+    fs,
+    path::{Path, PathBuf},
+};
 
 pub struct Note {
     path: PathBuf,
@@ -8,13 +12,21 @@ pub struct Note {
 }
 
 impl Note {
-    pub fn new(name: &str, path: &Path, group: Option<String>) -> Self {
-        Self {
-            path: path.to_path_buf(),
-            name: name.to_string(),
+    pub fn new(path: PathBuf, group: Option<String>) -> anyhow::Result<Self> {
+        let meta = fs::metadata(&path)?;
+        let mtime = meta.modified()?;
+        let name = path
+            .file_name()
+            .unwrap_or(OsStr::new("unknown"))
+            .to_string_lossy()
+            .to_string();
+
+        Ok(Self {
+            path,
+            name,
             group,
-            mtime: std::time::SystemTime::now(),
-        }
+            mtime,
+        })
     }
 
     pub fn mtime(&self) -> std::time::SystemTime {
