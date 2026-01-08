@@ -63,3 +63,41 @@ pub fn load_config() -> anyhow::Result<Config> {
 
     Ok(Config::from(editor_path, notes_path))
 }
+
+#[cfg(test)]
+#[cfg(unix)]
+mod config_tests {
+    use std::fs::{self, File};
+    use std::os::unix::fs::PermissionsExt;
+
+    use crate::config::check_perm;
+    #[test]
+    fn check_perm_detects_executable_file() {
+        let mut path = std::env::temp_dir();
+        path.push("check_perm_noexec_test");
+
+        File::create(&path).expect("failed to create temp file");
+
+        let perms = fs::Permissions::from_mode(0o755);
+        fs::set_permissions(&path, perms).expect("failed to set permissions");
+
+        assert!(check_perm(&path));
+
+        fs::remove_file(&path).ok();
+    }
+
+    #[test]
+    fn check_perm_detects_non_executable_file() {
+        let mut path = std::env::temp_dir();
+        path.push("check_perm_exec_test");
+
+        File::create(&path).expect("failed to create temp file");
+
+        let perms = fs::Permissions::from_mode(0o644);
+        fs::set_permissions(&path, perms).expect("failed to set permissions");
+
+        assert!(!check_perm(&path));
+
+        fs::remove_file(&path).ok();
+    }
+}

@@ -1,0 +1,6 @@
+[test-groups]
+serial-env = {max-threads = 1}
+
+[[profile.default.overrides]]
+filter = "test(test_load_config_with_env)"
+test-group = "serial-env"
