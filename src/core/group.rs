@@ -7,11 +7,7 @@ pub struct Group {
 
 impl Group {
     pub fn new(name: &str, notes: Option<Vec<Note>>) -> Self {
-        let notes = if let Some(notes) = notes {
-            notes
-        } else {
-            vec![]
-        };
+        let notes = notes.unwrap_or_default();
 
         Self {
             name: name.to_string(),
