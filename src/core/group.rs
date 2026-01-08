@@ -1,5 +1,6 @@
 use crate::core::notes::Note;
 
+#[derive(Debug)]
 pub struct Group {
     name: String,
     notes: Vec<Note>,

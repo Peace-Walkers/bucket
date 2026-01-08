@@ -4,6 +4,7 @@ use std::{
     path::{Path, PathBuf},
 };
 
+#[derive(Debug)]
 pub struct Note {
     path: PathBuf,
     name: String,

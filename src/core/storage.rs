@@ -8,7 +8,9 @@ pub struct Storage {
 
 impl Storage {
     pub fn load_groups(root: &Path) -> anyhow::Result<Vec<Group>> {
-        let mut groups = vec![];
+        let notes = Storage::load_notes(root)?;
+        let group = Group::new("all", Some(notes));
+        let mut groups = vec![group];
 
         for entry in fs::read_dir(root)? {
             let entry = entry?;
@@ -57,8 +59,8 @@ mod storage_loading {
 
         let groups = Storage::load_groups(dir.path())?;
 
-        assert_eq!(groups.len(), 1);
-        let g = &groups[0];
+        assert_eq!(groups.len(), 2);
+        let g = &groups[1];
         assert_eq!(g.notes().len(), 1);
         assert_eq!(g.name(), "rust");
         assert_eq!(g.notes()[0].name(), "borrowing.bck");
@@ -87,19 +89,43 @@ mod storage_loading {
         let mut groups = Storage::load_groups(dir.path())?;
         groups.sort_by(|a, b| a.name().cmp(b.name())); // sort by name
 
-        assert_eq!(groups.len(), 3);
-        let a = &groups[0];
+        assert_eq!(groups.len(), 4);
+        let all = &groups[0];
+        assert_eq!(all.notes().len(), 0);
+        assert_eq!(all.name(), "all");
+
+        let a = &groups[1];
         assert_eq!(a.notes().len(), 1);
         assert_eq!(a.name(), "go");
         assert_eq!(a.notes()[0].name(), "borrowing.bck");
-        let b = &groups[1];
+        let b = &groups[2];
         assert_eq!(b.notes().len(), 1);
         assert_eq!(b.name(), "python");
         assert_eq!(b.notes()[0].name(), "borrowing.bck");
-        let c = &groups[2];
+        let c = &groups[3];
         assert_eq!(c.notes().len(), 1);
         assert_eq!(c.name(), "rust");
         assert_eq!(c.notes()[0].name(), "borrowing.bck");
+        Ok(())
+    }
+
+    #[test]
+    fn test_no_group_only_notes() -> anyhow::Result<()> {
+        let dir = tempdir()?;
+
+        let a_note_path = dir.path().join("borrowing.bck");
+        let b_note_path = dir.path().join("pool.bck");
+        let c_note_path = dir.path().join("hello.bck");
+        File::create(&a_note_path)?;
+        File::create(&b_note_path)?;
+        File::create(&c_note_path)?;
+
+        let mut groups = Storage::load_groups(dir.path())?;
+
+        // dbg!(groups);
+        assert_eq!(groups.len(), 1);
+        let g = &mut groups[0];
+        assert_eq!(g.notes().len(), 3);
         Ok(())
     }
 }
