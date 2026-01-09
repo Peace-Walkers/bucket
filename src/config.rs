@@ -10,8 +10,8 @@ pub struct Config {
     pub note_dir: PathBuf,
 }
 
-const DEFAULT_EDITOR: &str = "/usr/bin/vim";
-const DEFAULT_NOTES_DIR: &str = ".notes";
+pub const DEFAULT_EDITOR: &str = "/usr/bin/vim";
+pub const DEFAULT_NOTES_DIR: &str = ".bucket";
 
 impl Config {
     pub fn new() -> anyhow::Result<Self> {
@@ -48,8 +48,6 @@ fn default_notes_dir() -> anyhow::Result<String> {
     Ok(home.join(DEFAULT_NOTES_DIR).to_string_lossy().to_string())
 }
 
-//TODO: this function currently assume environement variables are non-empty,
-// is obviously too naive. Add checks for empty variables.
 pub fn load_config() -> anyhow::Result<Config> {
     let editor = std::env::var("EDITOR").unwrap_or(DEFAULT_EDITOR.to_string());
     let notes_dir = std::env::var("NOTE_DIR").unwrap_or(default_notes_dir()?);

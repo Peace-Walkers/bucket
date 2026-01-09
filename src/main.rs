@@ -1,4 +1,4 @@
-use bucket::config;
+use bucket::{config, core::storage::Storage};
 use clap::Parser;
 
 #[derive(Parser, Debug)]
@@ -12,7 +12,10 @@ fn main() -> anyhow::Result<()> {
 
     let config = config::load_config()?;
 
+    let groups = Storage::load_groups(&config.note_dir)?;
+
     dbg!(args);
     dbg!(config);
+    dbg!(groups);
     Ok(())
 }
