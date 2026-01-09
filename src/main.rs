@@ -1,11 +1,5 @@
-use bucket::{config, core::storage::Storage, system};
+use bucket::{Args, config, core::storage::Storage, system};
 use clap::Parser;
-
-#[derive(Parser, Debug)]
-pub struct Args {
-    #[arg(short, long)]
-    pub groups: Option<Vec<String>>,
-}
 
 fn main() -> anyhow::Result<()> {
     let args = Args::parse();
@@ -14,10 +8,10 @@ fn main() -> anyhow::Result<()> {
 
     let groups = Storage::load_groups(&config.note_dir)?;
 
-    dbg!(args);
+    dbg!(&args);
     dbg!(&config);
     dbg!(groups);
 
-    system::editor::open_editor(&config)?;
+    system::editor::open_editor(&config, &args)?;
     Ok(())
 }
