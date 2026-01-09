@@ -11,7 +11,7 @@ pub struct Config {
 }
 
 const DEFAULT_EDITOR: &str = "/usr/bin/vim";
-const DEFAULT_NOTES_DIR: &str = ".notes";
+const DEFAULT_NOTES_DIR: &str = ".bucket";
 
 impl Config {
     pub fn new() -> anyhow::Result<Self> {
