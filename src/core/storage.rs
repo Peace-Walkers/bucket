@@ -8,11 +8,18 @@ pub struct Storage {
 
 impl Storage {
     pub fn load_groups(root: &Path) -> anyhow::Result<Vec<Group>> {
-        let notes = Storage::load_notes(root)?;
+        if !root.exists() {
+            // If the $NOTE_DIR path do not exist we create it
+            fs::create_dir(root)?;
+        }
         let group = Group::new("all", Some(notes));
         let mut groups = vec![group];
 
-        for entry in fs::read_dir(root)? {
+        // For each dir in 'root' we load all its notes
+        // and store them in a group named after the directory
+        for entry in
+            fs::read_dir(root).map_err(|e| anyhow::anyhow!("Cannot open notes dir : {e}"))?
+        {
             let entry = entry?;
             if entry.file_type()?.is_dir() {
                 let notes = Storage::load_notes(&entry.path())?;
