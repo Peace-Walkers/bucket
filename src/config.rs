@@ -10,8 +10,8 @@ pub struct Config {
     pub note_dir: PathBuf,
 }
 
-const DEFAULT_EDITOR: &str = "/usr/bin/vim";
-const DEFAULT_NOTES_DIR: &str = ".bucket";
+pub const DEFAULT_EDITOR: &str = "/usr/bin/vim";
+pub const DEFAULT_NOTES_DIR: &str = ".bucket";
 
 impl Config {
     pub fn new() -> anyhow::Result<Self> {

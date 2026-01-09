@@ -12,6 +12,10 @@ impl Storage {
             // If the $NOTE_DIR path do not exist we create it
             fs::create_dir(root)?;
         }
+
+        // We load root orphan notes first (not really orphan, their parent being 'root')
+        let notes = Storage::load_notes(root)
+            .map_err(|e| anyhow::anyhow!("Cannot open notes dir: \n\t{e}"))?;
         let group = Group::new("all", Some(notes));
         let mut groups = vec![group];
 
