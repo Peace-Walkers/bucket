@@ -61,7 +61,7 @@ impl Storage {
     }
 
     fn assign_default_path() -> anyhow::Result<String> {
-        let bucket_tmp_path = PathBuf::from(config::default_bucket_path(Some(DEFAULT_TMP_DIR))?);
+        let bucket_tmp_path = config::default_bucket_path(Some(DEFAULT_TMP_DIR))?;
         if !bucket_tmp_path.exists() {
             std::fs::create_dir_all(&bucket_tmp_path)?;
         }
@@ -103,7 +103,7 @@ impl Storage {
     /// - The name and group are provided -> we concatenate the two and add the default bucket path ('~/.bucket') at the beginning.
     /// - The name is not provided -> we simply define an incremental filename and concatenate it to the default bucket path.
     /// - The name is provided but not the group -> here the same logic applies: we concatenate the default bucket path and the name.
-    pub fn get_note_path(args: &Args) -> anyhow::Result<String> {
+    pub fn get_note_path(args: &Args) -> anyhow::Result<PathBuf> {
         let filename = if let Some(name) = &args.name {
             let n = name.clone();
             if let Some(group) = &args.groups {
