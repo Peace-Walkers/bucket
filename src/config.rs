@@ -41,25 +41,39 @@ fn check_perm(p: &Path) -> bool {
     false
 }
 
-/// TODO: this function do so much useless convertion. Refactor it
-fn default_notes_dir() -> anyhow::Result<String> {
+/// This function return default bucket path ('~/.bucket') by resolving
+/// home directory
+/// The function take one oprtional argument that represent a path extension
+/// e.g name="rust" -> '~/.bucket/rust'
+pub fn default_bucket_path(name: Option<&str>) -> anyhow::Result<PathBuf> {
     let home = std::env::home_dir().ok_or_else(|| anyhow::anyhow!("Failed to fetch home dir"))?;
-
-    Ok(home.join(DEFAULT_NOTES_DIR).to_string_lossy().to_string())
+    if let Some(name) = name {
+        Ok(home.join(DEFAULT_NOTES_DIR).join(name))
+    } else {
+        Ok(home.join(DEFAULT_NOTES_DIR))
+    }
 }
 
+/// This function return the config from environement variables
+/// in a [`Config`] structure.
 pub fn load_config() -> anyhow::Result<Config> {
-    let editor = std::env::var("EDITOR").unwrap_or(DEFAULT_EDITOR.to_string());
-    let notes_dir = std::env::var("NOTE_DIR").unwrap_or(default_notes_dir()?);
+    let editor = if let Ok(editor) = std::env::var("EDITOR") {
+        PathBuf::from(editor)
+    } else {
+        PathBuf::from(DEFAULT_EDITOR)
+    };
 
-    let editor_path = PathBuf::from(editor);
-    if !check_perm(&editor_path) {
+    let notes_dir = if let Ok(notes_dir) = std::env::var("NOTE_DIR") {
+        PathBuf::from(notes_dir)
+    } else {
+        default_bucket_path(None)?
+    };
+
+    if !check_perm(&editor) {
         anyhow::bail!("$EDITOR var conatain non executable path please check.")
     }
 
-    let notes_path = PathBuf::from(notes_dir);
-
-    Ok(Config::from(editor_path, notes_path))
+    Ok(Config::from(editor, notes_dir))
 }
 
 #[cfg(test)]
