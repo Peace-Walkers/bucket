@@ -60,6 +60,8 @@ impl Storage {
         Ok(notes)
     }
 
+    //TODO: this function need refactor to return PathBuf instead of
+    //      String & improve format & parsing logic
     fn assign_default_path() -> anyhow::Result<String> {
         let bucket_tmp_path = config::default_bucket_path(Some(DEFAULT_TMP_DIR))?;
         if !bucket_tmp_path.exists() {
