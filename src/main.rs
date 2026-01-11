@@ -1,4 +1,8 @@
-use bucket::{Args, config, core::storage::Storage, system};
+use bucket::{
+    Args, config,
+    core::storage::Storage,
+    system::{self, editor::SytemEditor},
+};
 use clap::Parser;
 
 fn main() -> anyhow::Result<()> {
@@ -12,6 +16,7 @@ fn main() -> anyhow::Result<()> {
     dbg!(&config);
     dbg!(groups);
 
-    system::editor::open_editor(&config, &args)?;
+    let editor = SytemEditor;
+    system::editor::open_editor(&editor, &config, &args)?;
     Ok(())
 }
