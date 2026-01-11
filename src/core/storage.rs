@@ -118,11 +118,7 @@ impl Storage {
             Self::assign_default_path()?
         };
 
-        dbg!(&filename);
-        let file_path = config::default_bucket_path(Some(&filename))?;
-
-        dbg!(&file_path);
-        Ok(file_path)
+        config::default_bucket_path(Some(&filename))
     }
 }
 

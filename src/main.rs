@@ -1,6 +1,6 @@
 use bucket::{
     Args, config,
-    core::storage::Storage,
+    core::{interpretor::Interpretor, storage::Storage},
     system::{self, editor::SytemEditor},
 };
 use clap::Parser;
@@ -17,6 +17,9 @@ fn main() -> anyhow::Result<()> {
     dbg!(groups);
 
     let editor = SytemEditor;
-    system::editor::open_editor(&editor, &config, &args)?;
+    let note_path = system::editor::open_editor(&editor, &config, &args)?;
+    let content = std::fs::read_to_string(note_path)?;
+    let _group = Interpretor::define_path(&content)?;
+
     Ok(())
 }

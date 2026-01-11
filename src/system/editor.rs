@@ -1,4 +1,4 @@
-use std::process::Command;
+use std::{path::PathBuf, process::Command};
 
 use crate::{Args, config::Config, core::storage::Storage, system::traits::Editor};
 
@@ -18,9 +18,8 @@ impl Editor for SytemEditor {
 
 /// This function's sole purpose is to run the editor and ensure that
 /// the output status is correct.
-pub fn open_editor<E: Editor>(editor: &E, config: &Config, args: &Args) -> anyhow::Result<()> {
+pub fn open_editor<E: Editor>(editor: &E, config: &Config, args: &Args) -> anyhow::Result<PathBuf> {
     let note_path = Storage::get_note_path(args)?;
     editor.open(&config.editor, &note_path)?;
-
-    Ok(())
+    Ok(note_path)
 }
