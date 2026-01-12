@@ -9,6 +9,7 @@ impl Interpretor {
         let lines: Vec<&str> = content.lines().collect();
 
         let group = if !lines.is_empty() {
+            //TODO: what if group name is already provided by cli ?
             Tokenizer::load(lines[0]).parse()
         } else {
             None

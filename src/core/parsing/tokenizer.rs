@@ -1,8 +1,11 @@
 pub struct Tokenizer {}
 
+#[derive(Debug, PartialEq)]
 pub enum Token {
     OpenBracket,
     CloseBracket,
+    OpenPar,
+    ClosePar,
     Char(char),
 }
 
@@ -33,6 +36,8 @@ impl From<char> for Token {
         match value {
             '[' => Self::OpenBracket,
             ']' => Self::CloseBracket,
+            '(' => Self::OpenPar,
+            ')' => Self::ClosePar,
             other => Self::Char(other),
         }
     }
