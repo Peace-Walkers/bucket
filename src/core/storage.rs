@@ -60,9 +60,14 @@ impl Storage {
         Ok(notes)
     }
 
-    //TODO: this function need refactor to return PathBuf instead of
-    //      String & improve format & parsing logic
-    fn assign_default_path() -> anyhow::Result<String> {
+    /// This function return the next index for tmp note name
+    /// e.g:
+    /// ```bash
+    /// > ls ~/.bucket/tmp
+    /// tmp_1.bck tmp_2.bck
+    /// ```
+    /// in this exemple the function return will be Ok(3)
+    pub fn find_next_incremental_note() -> anyhow::Result<usize> {
         let bucket_tmp_path = config::default_bucket_path(Some(DEFAULT_TMP_DIR))?;
         if !bucket_tmp_path.exists() {
             std::fs::create_dir_all(&bucket_tmp_path)?;
@@ -95,8 +100,15 @@ impl Storage {
                 last = if file_n > last { file_n } else { last };
             }
         }
+        Ok(last)
+    }
 
-        let name = format!("{}/tmp_{}.bck", DEFAULT_TMP_DIR, last + 1);
+    //TODO: this function need refactor to return PathBuf instead of
+    //      String & improve format & parsing logic
+    fn assign_default_path() -> anyhow::Result<String> {
+        let next = Storage::find_next_incremental_note()?;
+
+        let name = format!("{}/tmp_{}.bck", DEFAULT_TMP_DIR, next + 1);
         Ok(name)
     }
 
@@ -114,6 +126,9 @@ impl Storage {
             } else {
                 n
             }
+        } else if let Some(group) = &args.groups {
+            let group_name = &group[0];
+            group_name.clone()
         } else {
             Self::assign_default_path()?
         };

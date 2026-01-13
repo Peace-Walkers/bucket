@@ -20,6 +20,7 @@ impl Editor for SytemEditor {
 /// the output status is correct.
 pub fn open_editor<E: Editor>(editor: &E, config: &Config, args: &Args) -> anyhow::Result<PathBuf> {
     let note_path = Storage::get_note_path(args)?;
+    dbg!(&note_path);
     editor.open(&config.editor, &note_path)?;
     Ok(note_path)
 }
