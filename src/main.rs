@@ -1,4 +1,9 @@
-use bucket::{Args, config, core::storage::Storage, system};
+use bucket::{
+    cli::Args,
+    config,
+    core::{interpreter::Interpreter, storage::Storage},
+    system::{self, editor::SystemEditor},
+};
 use clap::Parser;
 
 fn main() -> anyhow::Result<()> {
@@ -12,6 +17,15 @@ fn main() -> anyhow::Result<()> {
     dbg!(&config);
     dbg!(groups);
 
-    system::editor::open_editor(&config, &args)?;
+    let editor = SystemEditor;
+    let note_path = system::editor::open_editor(&editor, &config, &args)?;
+
+    let content = std::fs::read_to_string(note_path)?;
+    let interpreted_path = Interpreter::define_path(&content)?;
+    //TODO: if interpreted_path is not None & group dont be provided by cli:
+    //          move note in the right directory (create if is not already here)
+
+    dbg!(interpreted_path);
+
     Ok(())
 }

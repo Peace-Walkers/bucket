@@ -1,18 +1,26 @@
-use std::process::Command;
+use std::{path::PathBuf, process::Command};
 
-use crate::{Args, config::Config, core::storage::Storage};
+use crate::{cli::Args, config::Config, core::storage::Storage, system::traits::Editor};
+
+pub struct SystemEditor;
+
+impl Editor for SystemEditor {
+    fn open(&self, editor: &std::path::Path, file: &std::path::Path) -> anyhow::Result<()> {
+        let status = Command::new(editor).arg(file).status()?;
+
+        if !status.success() {
+            anyhow::bail!("Editor exited with non-zero status");
+        }
+
+        Ok(())
+    }
+}
 
 /// This function's sole purpose is to run the editor and ensure that
 /// the output status is correct.
-pub fn open_editor(config: &Config, args: &Args) -> anyhow::Result<()> {
-    let editor_path = &config.editor;
-
+pub fn open_editor<E: Editor>(editor: &E, config: &Config, args: &Args) -> anyhow::Result<PathBuf> {
     let note_path = Storage::get_note_path(args)?;
-    let status = Command::new(editor_path).arg(note_path).status()?;
-
-    if !status.success() {
-        anyhow::bail!("Editor exited with non-zero status");
-    }
-
-    Ok(())
+    dbg!(&note_path);
+    editor.open(&config.editor, &note_path)?;
+    Ok(note_path)
 }
