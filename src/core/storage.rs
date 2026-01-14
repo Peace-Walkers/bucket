@@ -66,7 +66,7 @@ impl Storage {
     /// > ls ~/.bucket/tmp
     /// tmp_1.bck tmp_2.bck
     /// ```
-    /// in this exemple the function return will be Ok(3)
+    /// in this example the function return will be Ok(3)
     pub fn find_next_incremental_note() -> anyhow::Result<usize> {
         let bucket_tmp_path = config::default_bucket_path(Some(DEFAULT_TMP_DIR))?;
         if !bucket_tmp_path.exists() {
