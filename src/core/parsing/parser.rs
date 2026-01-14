@@ -3,6 +3,11 @@ use crate::core::{
     traits::NoteInfos,
 };
 
+/// Label information parsed from the first line of a note.
+///
+/// The parser expects an optional label at the beginning of the file in the
+/// form `[group]` or `[group](name)`. When such a label is found, it is
+/// returned as a `NoteLabel` from [`TokenStream::parse`].
 #[derive(Debug, Clone, PartialEq)]
 pub struct NoteLabel {
     pub name: Option<String>,
