@@ -19,8 +19,13 @@ fn main() -> anyhow::Result<()> {
 
     let editor = SystemEditor;
     let note_path = system::editor::open_editor(&editor, &config, &args)?;
+
     let content = std::fs::read_to_string(note_path)?;
-    let _group = Interpreter::define_path(&content)?;
+    let interpreted_path = Interpreter::define_path(&content)?;
+    //TODO: if interpreted_path is not None & group dont be provided by cli:
+    //          move note in the right directory (create if is not already here)
+
+    dbg!(interpreted_path);
 
     Ok(())
 }
