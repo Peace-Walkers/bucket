@@ -44,7 +44,7 @@ impl From<char> for Token {
 }
 
 impl Tokenizer {
-    /// This funtion take the first line of the note
+    /// This function take the first line of the note
     /// as &str and tokenize it into list of [`Token`] and return a [`TokenStream`]
     /// ready to be parsed
     pub fn load(content: &str) -> TokenStream {

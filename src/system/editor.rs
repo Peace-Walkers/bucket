@@ -1,10 +1,10 @@
 use std::{path::PathBuf, process::Command};
 
-use crate::{Args, config::Config, core::storage::Storage, system::traits::Editor};
+use crate::{cli::Args, config::Config, core::storage::Storage, system::traits::Editor};
 
-pub struct SytemEditor;
+pub struct SystemEditor;
 
-impl Editor for SytemEditor {
+impl Editor for SystemEditor {
     fn open(&self, editor: &std::path::Path, file: &std::path::Path) -> anyhow::Result<()> {
         let status = Command::new(editor).arg(file).status()?;
 

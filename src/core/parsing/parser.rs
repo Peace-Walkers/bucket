@@ -1,9 +1,22 @@
-use crate::core::parsing::tokenizer::{Token, TokenStream};
+use crate::core::{
+    parsing::tokenizer::{Token, TokenStream},
+    traits::NoteInfos,
+};
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct NoteLabel {
     pub name: Option<String>,
     pub group: Option<String>,
+}
+
+impl NoteInfos for NoteLabel {
+    fn group(&self) -> Option<&str> {
+        self.group.as_deref()
+    }
+
+    fn name(&self) -> Option<&str> {
+        self.name.as_deref()
+    }
 }
 
 impl TokenStream {

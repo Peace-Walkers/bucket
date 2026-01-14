@@ -4,8 +4,8 @@ use std::{
 };
 
 use crate::{
-    Args, config,
-    core::{group::Group, notes::Note},
+    config,
+    core::{group::Group, notes::Note, traits::NoteInfos},
 };
 
 pub struct Storage {
@@ -117,18 +117,21 @@ impl Storage {
     /// - The name and group are provided -> we concatenate the two and add the default bucket path ('~/.bucket') at the beginning.
     /// - The name is not provided -> we simply define an incremental filename and concatenate it to the default bucket path.
     /// - The name is provided but not the group -> here the same logic applies: we concatenate the default bucket path and the name.
-    pub fn get_note_path(args: &Args) -> anyhow::Result<PathBuf> {
-        let filename = if let Some(name) = &args.name {
-            let n = name.clone();
-            if let Some(group) = &args.groups {
-                let group_name = &group[0];
-                format!("{group_name}/{n}")
+    pub fn get_note_path<N>(args: &N) -> anyhow::Result<PathBuf>
+    where
+        N: NoteInfos,
+    {
+        let note_name = args.name();
+        let note_group = args.group();
+        let filename = if let Some(name) = &note_name {
+            let n = name;
+            if let Some(group) = &note_group {
+                format!("{group}/{n}")
             } else {
-                n
+                n.to_string()
             }
-        } else if let Some(group) = &args.groups {
-            let group_name = &group[0];
-            group_name.clone()
+        } else if let Some(group) = &note_group {
+            group.to_string()
         } else {
             Self::assign_default_path()?
         };

@@ -23,7 +23,7 @@ impl Editor for MockEditor {
 
 mod editor_test {
     use crate::{
-        Args,
+        cli::Args,
         config::Config,
         system::{editor::open_editor, mocks::MockEditor},
     };
@@ -35,7 +35,7 @@ mod editor_test {
 
         let args = Args {
             name: Some("test.bck".into()),
-            groups: None,
+            group: None,
         };
 
         open_editor(&mock, &config, &args)?;

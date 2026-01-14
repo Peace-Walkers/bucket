@@ -1,7 +1,8 @@
 use bucket::{
-    Args, config,
-    core::{interpretor::Interpretor, storage::Storage},
-    system::{self, editor::SytemEditor},
+    cli::Args,
+    config,
+    core::{interpreter::Interpreter, storage::Storage},
+    system::{self, editor::SystemEditor},
 };
 use clap::Parser;
 
@@ -16,10 +17,10 @@ fn main() -> anyhow::Result<()> {
     dbg!(&config);
     dbg!(groups);
 
-    let editor = SytemEditor;
+    let editor = SystemEditor;
     let note_path = system::editor::open_editor(&editor, &config, &args)?;
     let content = std::fs::read_to_string(note_path)?;
-    let _group = Interpretor::define_path(&content)?;
+    let _group = Interpreter::define_path(&content)?;
 
     Ok(())
 }

@@ -2,9 +2,9 @@ use std::path::PathBuf;
 
 use crate::core::parsing::tokenizer::Tokenizer;
 
-pub struct Interpretor {}
+pub struct Interpreter {}
 
-impl Interpretor {
+impl Interpreter {
     pub fn define_path(content: &str) -> anyhow::Result<PathBuf> {
         let lines: Vec<&str> = content.lines().collect();
 
