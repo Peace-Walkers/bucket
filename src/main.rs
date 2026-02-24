@@ -1,3 +1,5 @@
+use std::{fs, path::Path};
+
 use bucket::{
     cli::Args,
     config,
@@ -20,12 +22,19 @@ fn main() -> anyhow::Result<()> {
     let editor = SystemEditor;
     let note_path = system::editor::open_editor(&editor, &config, &args)?;
 
-    let content = std::fs::read_to_string(note_path)?;
+    let content = std::fs::read_to_string(&note_path)?;
     let interpreted_path = Interpreter::define_path(&content)?;
-    //TODO: if interpreted_path is not None & group dont be provided by cli:
-    //          move note in the right directory (create if is not already here)
 
-    dbg!(interpreted_path);
+    dbg!(&note_path);
+    dbg!(&interpreted_path);
+
+    if let Some(path) = interpreted_path {
+        if let Some(parent) = Path::new(&path).parent() {
+            fs::create_dir_all(parent)?;
+        }
+
+        std::fs::rename(note_path, path)?;
+    }
 
     Ok(())
 }
